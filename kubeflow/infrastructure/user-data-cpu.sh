@@ -209,7 +209,7 @@ kfctl apply all -V
 
 # update kubeflow pipeline library
 cd /root/pipeline/kubeflow/install-kubeflow/
-/root/pipeline/install-kubeflow/.cache/v0.5.1/scripts/upgrade_kfp.sh 336eeb6637b38ae474f00657c4e9b9550397e03d
+/root/pipeline/kubeflow/install-kubeflow/.cache/v0.5.1/scripts/upgrade_kfp.sh 336eeb6637b38ae474f00657c4e9b9550397e03d
 
 # Cloud-specific stuff
 # Install AWS CLI
