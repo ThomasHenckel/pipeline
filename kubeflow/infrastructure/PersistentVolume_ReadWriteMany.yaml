@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pvc-many
+  name: pvc-readwritemany
 spec:
   accessModes:
   - ReadWriteMany
   capacity:
     storage: 10Gi
   hostPath:
-    path: /mnt/pipelineai/users/pvc-ReadWriteMany
+    path: /mnt/pipelineai/users/pvc-readwritemany
     type: DirectoryOrCreate
   nodeAffinity:
     required:
