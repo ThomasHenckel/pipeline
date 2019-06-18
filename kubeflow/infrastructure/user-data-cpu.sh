@@ -48,6 +48,10 @@ add-apt-repository ppa:git-core/ppa
 apt-get update
 apt-get install -y git
 
+# install pip and pip3
+apt-get install python-pip -y
+apt-get install python3-pip -y
+
 # Pin normal pip and pip3 to 10.0.1
 pip install pip==10.0.1 --ignore-installed --no-cache --upgrade
 pip3 install pip==10.0.1 --ignore-installed --no-cache --upgrade
@@ -173,6 +177,9 @@ pipeline cluster-kube-install --tag $PIPELINE_VERSION --chip=cpu --namespace=kub
 # Create kubeflow assets
 cd /root 
 git clone https://github.com/PipelineAI/pipeline
+mkdir -p /root/pipeline/kubeflow/install-kubeflow/.cache/v0.5.1/
+cd /root/pipeline/kubeflow/install-kubeflow/.cache/v0.5.1/
+curl https://raw.githubusercontent.com/kubeflow/kubeflow/v0.5.1/scripts/download.sh | bash
 
 # Kfctl
 export KFAPP=install-kubeflow
@@ -190,7 +197,19 @@ kubectl delete -f /root/.pipelineai/cluster/yaml/.generated-openebs-storageclass
 sleep 30
 kubectl create -f /root/.pipelineai/cluster/yaml/.generated-openebs-storageclass.yaml
 
+# generate PersistentVolume with accessModes: ReadWriteMany as
+cd /root/pipeline/kubeflow/install-kubeflow/
+curl https://raw.githubusercontent.com/ThomasHenckel/pipeline/master/kubeflow/infrastructure/PersistentVolume_ReadWriteMany.yaml -o PersistentVolume_ReadWriteMany.yaml
+sleep 30
+kubectl delete -f /root/pipeline/kubeflow/install-kubeflow/PersistentVolume_ReadWriteMany.yaml
+sleep 30
+kubectl create -f /root/pipeline/kubeflow/install-kubeflow/PersistentVolume_ReadWriteMany.yaml
+
 kfctl apply all -V
+
+# update kubeflow pipeline library
+cd /root/pipeline/kubeflow/install-kubeflow/
+/root/pipeline/install-kubeflow/.cache/v0.5.1/scripts/upgrade_kfp.sh 336eeb6637b38ae474f00657c4e9b9550397e03d
 
 # Cloud-specific stuff
 # Install AWS CLI
