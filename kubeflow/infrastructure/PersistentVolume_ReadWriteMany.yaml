@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-many
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  hostPath:
+    path: /mnt/pipelineai/users/pvc-ReadWriteMany
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - instance-1
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: openebs-hostpath
+  volumeMode: Filesystem
